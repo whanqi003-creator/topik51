@@ -22,6 +22,9 @@ function loadQuestion(index) {
     
     document.getElementById('hint-panel').style.display = 'none';
     document.getElementById('answer-panel').style.display = 'none';
+    
+    // 新增：切换题目时，清空输入框
+    document.getElementById('user-ans').value = "";
 }
 
 function showHint() {
