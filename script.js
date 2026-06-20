@@ -5,6 +5,13 @@ window.onload = async function() {
     try {
         const response = await fetch('questions.json');
         questions = await response.json();
+        
+        // ✨ 新增：洗牌算法（Fisher-Yates Shuffle），自动将题库彻底乱序
+        for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+        }
+        
         loadQuestion(currentIndex);
     } catch (error) {
         console.error("加载真题数据失败:", error);
@@ -16,15 +23,16 @@ function loadQuestion(index) {
     if (questions.length === 0) return;
     
     const q = questions[index];
-    document.getElementById('q-title').innerText = `Q51 专项提升 - 第 ${index + 1} 题：${q.title}`;
-    document.getElementById('text-before').innerText = q.context_before;
-    document.getElementById('text-after').innerText = q.context_after;
+    // 💡 这里去掉了死板的“第几题”，改成显示当前刷题的进度，更有刷题成就感
+    document.getElementById('q-title').innerText = `${q.title} 专项提升（当前第 ${index + 1}/${questions.length} 道）`;
+    document.getElementById('text-content').innerText = q.context;
     
     document.getElementById('hint-panel').style.display = 'none';
     document.getElementById('answer-panel').style.display = 'none';
     
-    // 新增：切换题目时，清空输入框
-    document.getElementById('user-ans').value = "";
+    // 清空两个输入框
+    document.getElementById('user-ans-a').value = "";
+    document.getElementById('user-ans-b').value = "";
 }
 
 function showHint() {
@@ -35,7 +43,7 @@ function showHint() {
 
 function showAnswer() {
     const panel = document.getElementById('answer-panel');
-    panel.innerText = `参考答案： ${questions[currentIndex].answer}`;
+    panel.innerText = `【官方参考答案】\n${questions[currentIndex].answer}`;
     panel.style.display = 'block';
 }
 
